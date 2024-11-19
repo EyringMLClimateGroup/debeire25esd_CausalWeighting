@@ -1,0 +1,435 @@
+# ESMValTool
+# recipe_.yml
+---
+documentation:
+  title: Recipe for Causal weighting method
+  description: Causal weighting of SSP5-8.5 projections of precipitation over land
+
+  authors:
+    - debeire_kevin
+
+  maintainer:
+    - debeire_kevin
+
+  references:
+    - debeire2024
+
+  projects:
+    - usmile
+    
+obs_data: &obs_data #dummy obs
+- dataset: ERA5
+  project: native6
+  tier: 3
+  type: reanaly
+  version: 'v1'
+
+datasets: &model_data
+- {dataset: ACCESS-CM2, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: ACCESS-CM2, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: ACCESS-CM2, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: ACCESS-ESM1-5, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: ACCESS-ESM1-5, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: ACCESS-ESM1-5, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: BCC-CSM2-MR, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: CESM2, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: CESM2-WACCM, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: CESM2-WACCM, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: CESM2-WACCM, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f2, grid: gr}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f2, grid: gr}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f2, grid: gr}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f2, grid: gr}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f2, grid: gr}
+- {dataset: CNRM-CM6-1, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f2, grid: gr}
+- {dataset: CNRM-ESM2-1, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f2, grid: gr}
+- {dataset: CNRM-ESM2-1, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f2, grid: gr}
+- {dataset: CNRM-ESM2-1, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f2, grid: gr}
+- {dataset: CNRM-ESM2-1, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f2, grid: gr}
+- {dataset: CNRM-ESM2-1, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f2, grid: gr}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r10i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p2f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p2f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p2f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p2f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r7i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r8i1p1f1, grid: gn}
+- {dataset: CanESM5, project: CMIP6, exp: [historical, ssp585], ensemble: r9i1p1f1, grid: gn}
+- {dataset: EC-Earth3, project: CMIP6, exp: [historical, ssp585], ensemble: r11i1p1f1, grid: gr}
+- {dataset: EC-Earth3, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gr}
+- {dataset: EC-Earth3, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gr}
+- {dataset: EC-Earth3-Veg, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gr}
+- {dataset: EC-Earth3-Veg, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gr}
+- {dataset: EC-Earth3-Veg, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gr}
+- {dataset: EC-Earth3-Veg, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gr}
+- {dataset: FGOALS-g3, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: FGOALS-g3, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: HadGEM3-GC31-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-MM, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-MM, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-MM, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f3, grid: gn}
+- {dataset: HadGEM3-GC31-MM, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f3, grid: gn}
+- {dataset: INM-CM5-0, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gr1}
+- {dataset: IPSL-CM6A-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gr}
+- {dataset: IPSL-CM6A-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gr}
+- {dataset: IPSL-CM6A-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gr}
+- {dataset: IPSL-CM6A-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gr}
+- {dataset: IPSL-CM6A-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f1, grid: gr}
+- {dataset: KACE-1-0-G, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gr}
+- {dataset: KACE-1-0-G, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gr}
+- {dataset: KACE-1-0-G, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gr}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r10i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r7i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r8i1p1f2, grid: gn}
+- {dataset: MIROC-ES2L, project: CMIP6, exp: [historical, ssp585], ensemble: r9i1p1f2, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r10i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r7i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r8i1p1f1, grid: gn}
+- {dataset: MIROC6, project: CMIP6, exp: [historical, ssp585], ensemble: r9i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-HR, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-HR, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r10i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r6i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r7i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r8i1p1f1, grid: gn}
+- {dataset: MPI-ESM1-2-LR, project: CMIP6, exp: [historical, ssp585], ensemble: r9i1p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r1i2p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f1, grid: gn}
+- {dataset: MRI-ESM2-0, project: CMIP6, exp: [historical, ssp585], ensemble: r5i1p1f1, grid: gn}
+- {dataset: NorESM2-LM, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f1, grid: gn}
+- {dataset: UKESM1-0-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r1i1p1f2, grid: gn}
+- {dataset: UKESM1-0-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r2i1p1f2, grid: gn}
+- {dataset: UKESM1-0-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r3i1p1f2, grid: gn}
+- {dataset: UKESM1-0-LL, project: CMIP6, exp: [historical, ssp585], ensemble: r4i1p1f2, grid: gn}
+
+preprocessors:
+  pr_land_anomalies:
+    mask_landsea:
+      mask_out: sea
+    area_statistics:
+      operator: mean
+    annual_statistics:
+      operator: mean
+    anomalies:
+      period: full
+      reference:
+        end_day: 31
+        end_month: 12
+        end_year: 2014
+        start_day: 1
+        start_month: 1
+        start_year: 1995
+      standardize: false
+    convert_units:
+      units: "mm day-1"
+  climatological_mean:
+    climate_statistics:
+      operator: mean
+    regrid: &id003
+      scheme: linear
+      target_grid: 2.5x2.5
+    mask_landsea:
+      mask_out: sea
+  pr_land:
+    climate_statistics:
+      operator: mean
+    regrid:
+      scheme: linear
+      target_grid: 2.5x2.5
+    mask_landsea:
+      mask_out: sea
+    convert_units:
+      units: "mm day-1"
+  pr_land_mean:
+    mask_landsea:
+      mask_out: sea
+    climate_statistics:
+      operator: mean
+    convert_units:
+      units: "mm day-1"
+
+diagnostics:
+  calculate_weights:
+    variables:
+      cme:
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: climatological_mean
+        additional_datasets: *obs_data
+        short_name: pr
+    scripts:
+      ncep_weights_2041-2060:
+        combine_ensemble_members: true
+        distancefile: ./perf_ind_scores/xr_ind_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        independence_contributions:
+          cme: 1
+        independence_sigma: 0.9
+        obs_data: native6
+        reference: "NCEP/NCAR"
+        performance_contributions:
+          cme: 1
+        performance_sigma: 0.53
+        performancefile: ./perf_ind_scores/xr_perf_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        script: weighting/climwip/main.py
+      ncep_weights_2081-2100:
+        combine_ensemble_members: true
+        distancefile: ./perf_ind_scores/xr_ind_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        independence_contributions:
+          cme: 1
+        independence_sigma: 0.9
+        obs_data: native6
+        reference: "NCEP/NCAR"
+        performance_contributions:
+          cme: 1
+        performance_sigma: 0.29
+        performancefile: ./perf_ind_scores/xr_perf_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        script: weighting/climwip/main.py
+      era5_weights_2041-2060:
+        combine_ensemble_members: true
+        distancefile: ./perf_ind_scores/xr_ind_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        independence_contributions:
+          cme: 1
+        independence_sigma: 0.9
+        obs_data: native6
+        reference: "ERA5"
+        performance_contributions:
+          cme: 1
+        performance_sigma: 0.48
+        performancefile: ./perf_ind_scores/xr_perf_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        script: weighting/climwip/main.py
+      era5_weights_2081-2100:
+        combine_ensemble_members: true
+        distancefile: ./perf_ind_scores/xr_ind_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        independence_contributions:
+          cme: 1
+        independence_sigma: 0.9
+        obs_data: native6
+        reference: "ERA5"
+        performance_contributions:
+          cme: 1
+        performance_sigma: 0.28
+        performancefile: ./perf_ind_scores/xr_perf_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc
+        script: weighting/climwip/main.py
+
+  weighted_graph:
+    variables:
+      pr:
+        mip: Amon
+        preprocessor: pr_land_anomalies
+        start_year: 1995
+        end_year: 2100
+    scripts:
+      weighted_graph_ncep:
+        ancestors:
+        - calculate_weights/ncep_weights_2081-2100
+        - pr
+        script: weighting/weighted_temperature_graph.py
+        settings:
+          central_estimate: mean
+          end_day: 31
+          end_month: 12
+          end_year: 2014
+          start_day: 1
+          start_month: 1
+          start_year: 1995
+          upper_bound: 95
+          lower_bound: 5
+        weights: weights.nc
+        title: "SSP5-8.5 projections relative to 1995-2014 (NCEP)"
+        ylabel: "Precipitation anomaly over land (mm.day$^{-1}$)"
+      weighted_graph_era5:
+        ancestors:
+        - calculate_weights/era5_weights_2081-2100
+        - pr
+        script: weighting/weighted_temperature_graph.py
+        settings:
+          central_estimate: mean
+          end_day: 31
+          end_month: 12
+          end_year: 2014
+          start_day: 1
+          start_month: 1
+          start_year: 1995
+          upper_bound: 95
+          lower_bound: 5
+        weights: weights.nc
+        title: "SSP5-8.5 projections relative to 1995-2014 (ERA5)"
+        ylabel: "Precipitation anomaly over land (mm.day$^{-1}$)"
+
+  weighted_boxplot:
+    variables:
+      pr_CLIM_reference:
+        short_name: pr
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: pr_land_mean
+      pr_CLIM_future1:
+        short_name: pr
+        start_year: 2041
+        end_year: 2060
+        mip: Amon
+        preprocessor: pr_land_mean
+      pr_CLIM_future2:
+        short_name: pr
+        start_year: 2081
+        end_year: 2100
+        mip: Amon
+        preprocessor: pr_land_mean
+    scripts:
+      weighted_boxplot:
+        ancestors: [calculate_weights/ncep_weights_2041-2060, calculate_weights/era5_weights_2041-2060, calculate_weights/ncep_weights_2081-2100, calculate_weights/era5_weights_2081-2100, 
+        pr_CLIM_future1, pr_CLIM_future2, pr_CLIM_reference]
+        script: weighting/weighted_temperature_boxplot.py
+        settings:
+          central_estimate: mean
+        weights: weights.nc
+        title: "SSP5-8.5 projections relative to 1995-2014"
+        ylabel: "Precipitation change over land (mm.day$^{-1}$)"
+        xlabel: ["2041-2060","2081-2100"]
+
+  weighted_temperature_map_2081-2100_ERA5:
+    variables:
+      pr_CLIM_reference:
+        short_name: pr
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: pr_land
+      pr_CLIM_future:
+        short_name: pr
+        start_year: 2081
+        end_year: 2100
+        mip: Amon
+        preprocessor: pr_land
+    scripts:
+      weighted_temperature_map:
+        script: weighting/weighted_temperature_map.py
+        ancestors: [calculate_weights/era5_weights_2081-2100, pr_CLIM_future, pr_CLIM_reference]
+        weights: 'weights.nc'
+        # optional arguments
+        units: "(mm.day$^{-1}$)"
+        model_aggregation: mean
+        scenario: "SSP5-8.5"
+        reference: "ERA5"
+        upper_bound: 95
+        lower_bound: 5
+        xticks: [-180,-120,-60, 0, 60, 120, 180]
+        yticks: [-90,-60,-30,0,30,60,90]
+
+  weighted_temperature_map_2081-2100_NCEP:
+    variables:
+      pr_CLIM_reference:
+        short_name: pr
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: pr_land
+      pr_CLIM_future:
+        short_name: pr
+        start_year: 2081
+        end_year: 2100
+        mip: Amon
+        preprocessor: pr_land
+    scripts:
+      weighted_temperature_map:
+        script: weighting/weighted_temperature_map.py
+        ancestors: [calculate_weights/ncep_weights_2081-2100, pr_CLIM_future, pr_CLIM_reference]
+        weights: 'weights.nc'
+        scenario: "SSP5-8.5"
+        # optional arguments
+        units: "(mm.day$^{-1}$)"
+        reference: "NCEP/NCAR"
+        model_aggregation: mean
+        upper_bound: 95
+        lower_bound: 5
+        xticks: [-180,-120,-60, 0, 60, 120, 180]
+        yticks: [-90,-60,-30,0,30,60,90]
+
+  weighted_temperature_map_2041-2060_ERA5:
+    variables:
+      pr_CLIM_reference:
+        short_name: pr
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: pr_land
+      pr_CLIM_future:
+        short_name: pr
+        start_year: 2041
+        end_year: 2060
+        mip: Amon
+        preprocessor: pr_land
+    scripts:
+      weighted_temperature_map:
+        script: weighting/weighted_temperature_map.py
+        ancestors: [calculate_weights/era5_weights_2041-2060, pr_CLIM_future, pr_CLIM_reference]
+        weights: 'weights.nc'
+        # optional arguments
+        units: "(mm.day$^{-1}$)"
+        model_aggregation: mean
+        scenario: "SSP5-8.5"
+        reference: "ERA5"
+        upper_bound: 95
+        lower_bound: 5
+        xticks: [-180,-120,-60, 0, 60, 120, 180]
+        yticks: [-90,-60,-30,0,30,60,90]
+
+  weighted_temperature_map_2041-2060_NCEP:
+    variables:
+      pr_CLIM_reference:
+        short_name: pr
+        start_year: 1995
+        end_year: 2014
+        mip: Amon
+        preprocessor: pr_land
+      pr_CLIM_future:
+        short_name: pr
+        start_year: 2041
+        end_year: 2060
+        mip: Amon
+        preprocessor: pr_land
+    scripts:
+      weighted_temperature_map:
+        script: weighting/weighted_temperature_map.py
+        ancestors: [calculate_weights/ncep_weights_2041-2060, pr_CLIM_future, pr_CLIM_reference]
+        weights: 'weights.nc'
+        scenario: "SSP5-8.5"
+        # optional arguments
+        units: "(mm.day$^{-1}$)"
+        reference: "NCEP/NCAR"
+        model_aggregation: mean
+        upper_bound: 95
+        lower_bound: 5
+        xticks: [-180,-120,-60, 0, 60, 120, 180]
+        yticks: [-90,-60,-30,0,30,60,90]
