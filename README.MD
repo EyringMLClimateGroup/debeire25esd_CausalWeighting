@@ -61,3 +61,10 @@ If you want to produce plots for the weighted precipitation projections: you can
 ### Notes
 
 If there is a mistake in this README or you want to add more details, feel free to update this README.
+
+### TO DO:
+- clean the .py and .ipynb.
+- remove hard-coded path and replace them
+- add folder for input data, pca varimax output, pcmci output
+- explain how to get the input CMIP6 data and how to detrend it
+- how to install tigramite
