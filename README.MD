@@ -6,7 +6,7 @@ This repository contains the scripts, data, and instructions necessary to perfor
 
 Author of the repository: Kevin Debeire, DLR, kevin.debeire(at)dlr.de
 
-The current release on Zenodo can be found here: [![DOI](https://zenodo.org/badge/xxx.svg)](https://zenodo.org/badge/latestdoi/xxx)
+The current release on Zenodo can be found here: [![DOI](https://zenodo.org/badge/932154073.svg)](https://zenodo.org/badge/latestdoi/932154073)
 
 ## Overview
 
