@@ -1,8 +1,8 @@
 # Causal Weighting of Precipitation Projections over Land of CMIP6 Models
 
-Author: Kevin Debeire, DLR, kevin.debeire@dlr.de 
-
 This repository contains the scripts, data, and instructions necessary to perform causal weighting of precipitation projections over land using CMIP6 models. The approach leverages causal inference and performance/independence-based metrics to assess and weight climate model projections.
+
+Author: Kevin Debeire, DLR, kevin.debeire(at)dlr.de
 
 ## Overview
 
@@ -61,3 +61,8 @@ If you want to produce plots for the weighted precipitation projections: you can
 ### Notes
 
 If you want to produce PCA-Varimax weights, run `generate_varimax_era5_1979-2014_allseason_timebin1.py`. You can then apply those weights to desired CMIP6 models `generate_varimax_for_ALL_CMIP6_MODELS_from_era5_1979-2014_weights_timebin1.py` to create the dimension-reduced data. Then, run `run_pcmci_for_CMIP6_MODELS_timebin1x2_taumax20.py` to estimate the causal networks (install tigramite for this). The Jupyter notebook can be run to produce some plots and calculate the metrics from the calculated causal networks.
+
+## License
+GNU General Public License v3.0
+
+See [license.txt](./license.txt) for full text.
