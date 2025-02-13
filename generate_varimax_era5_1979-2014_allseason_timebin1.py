@@ -16,13 +16,15 @@ import pickle as cPickle
 import ast
 from datetime import date, datetime
 
-from geo_field_jakob import GeoField
+from CMIP6_CME.script.debeire24esd_CMIP6_causal_weighting.geo_field import GeoField
 import tigramite
 from tigramite import data_processing as pp
+import yaml
 
-# data_dir=sys.argv[1]
-# filename=sys.argv[2]
-# savefolder=sys.argv[3]
+# Load YAML config
+with open("config.yaml", "r") as file:
+    config = yaml.safe_load(file)
+
 def load_data(load_filename, folder_name, varname, 
                 from_date=None, to_date=None,
                 anomalize=None, anomalize_variance=None,
@@ -62,25 +64,11 @@ def load_data(load_filename, folder_name, varname,
 
         geo_object.transform_to_anomalies(anomalize_base,
                                           anomalize)
-        # print geo_object.tm[0]
-    # print geo_object.data()
-    # if anomalize_variance:
-    #     if verbosity > 0:
-    #         print("\tanomalize variance with base period %s" % str(anomalize_base))
-    #     geo_object.normalize_variance(anomalize_base)
 
-    # print geo_object.d[::12].mean(axis=0)
     if from_date is not None and to_date is not None:
         if verbosity > 0:
             print("\tSlicing from = %s to %s" % (from_date, to_date))
         geo_object.slice_date_range(from_date, to_date)
-
-    # if months is not None:
-    #     if verbosity > 0:
-    #         print("\tSlicing months %s" % months)
-    #     geo_object.slice_months(months)
-    
-    # print geo_object.data[ :10, 0, 0]
     return geo_object
 
 def preprocess_data(geo_object,
@@ -272,8 +260,6 @@ def get_varimax_loadings(geo_object, month_mask=None,time_bin=1,
     V, U, S, ts_svd, eig, explained, max_comps = pca_svd(masked_data, truncate_by=truncate_by, max_comps=max_comps,
                                    fraction_explained_variance=fraction_explained_variance,
                                     verbosity=verbosity)
-        # if verbosity > 0:
-        #     print("Explained variance at max_comps = %d: %.5f" % (max_comps, explained))
 
     if verbosity > 0:
         if truncate_by == 'max_comps':
@@ -291,9 +277,6 @@ def get_varimax_loadings(geo_object, month_mask=None,time_bin=1,
         print("\tVarimax rotation")
     # Rotate
     Vr, Rot = varimax(V, verbosity=verbosity)
-    # Vr = V
-    # Rot = np.diag(np.ones(V.shape[1]))
-    # print Vr.shape
     Vr = svd_flip(Vr)
 
     if verbosity > 0:
@@ -326,14 +309,7 @@ def get_varimax_loadings(geo_object, month_mask=None,time_bin=1,
         comp_loc['y'][i] = geo_object.lats[coords[0]]
 
     total_var = np.sum(np.var(masked_data, axis = 0))
-
-    # print time_mask
-    # print expvar
-    # start_end = (str(date.fromordinal(int(geo_object.tm[0]))),
-    #                   str(date.fromordinal(int(geo_object.tm[-1]))))
     start_end = (str(geo_object.start_date), str(geo_object.end_date))
-
-    # print start_end_year
 
     return {'weights' : np.copy(Vr), 
             'ts_unmasked':comps_ts,
@@ -455,13 +431,8 @@ def generate_pdf(dict, save_folder, save_name):
             ax.set_title("Autocorrelation", fontsize=10)
             ax.acorr(series, maxlags=30)
             ax.grid(True)
-            # ax.set_xlabel('lag [days]')
             ax.set_xlabel('lag [3 days]')            
             ax.set_xlim(0, 30)
-
-            # plt.tight_layout()
-
-
 
             plt.subplots_adjust(wspace=0.5, hspace=0.5)
             pdf.savefig()  # saves the current figure into a pdf page
@@ -480,12 +451,9 @@ if __name__ == '__main__':
     ##
 
     run_script = True
-    # save_folder = '/media/peer/Firecuda/cmip5_jakob/calc_3dm_varimax/'
-    save_folder = '/work/bd1083/b309165/CMIP6_CME/output_pca/era5_1979-2014_weights_timebin1/'
-    ## Save filename is generated from parameters, see below!
-
+    save_folder = config["weight_path"]
     plot_loadings = False    # Probably doesn't work on cluster...
-    plot_load_folder = '/work/bd1083/b309165/CMIP6_CME/output_pca/'
+    plot_load_folder = ''
     plot_load_filename = 'something.bin'
     time_bin=1
     season_list= ["[12, 1, 2]","[6, 7, 8]","[3, 4, 5]","[9, 10, 11]"]
@@ -495,7 +463,7 @@ if __name__ == '__main__':
                 d = {}
                 
                 d['data_parameters'] = {
-                    'folder_name' : '/work/bd1083/b309165/CMIP6_CME/data/era5_data/',
+                    'folder_name' : config["detrend_data_path"],
                     'load_filename' :  'OBS6_ERA5_reanaly_1_day_psl_1979-2014_detrend.nc',
                     'varname' : 'psl',
                     'use_cdftime' : True,
@@ -554,15 +522,3 @@ if __name__ == '__main__':
               
         if plot_loadings:
             generate_pdf(d,  plot_load_folder, plot_load_filename)
-
-    ##
-    ## Check get_ts_from_loading
-    ##
-    # geo_object = load_data(**d['data_parameters'])
-
-    # geo_object = preprocess_data(geo_object, **d['preprocessing_parameters'])
-
-    # ts = get_ts_from_loading(geo_object, 
-    #                     weights=d['results']['weights'])
-
-    # assert np.allclose(ts, d['results']['ts_unmasked'])

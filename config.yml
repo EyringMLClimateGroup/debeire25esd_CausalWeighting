@@ -1,0 +1,10 @@
+detrend_data_path: "" #CMIP6 detrended psl data
+era5_path: "" #Reference detrended psl data
+weight_path: "" #Path to PCA-Varimax output
+pr_histo_path: "" #PR historical data (for F1-score v. deltaPrecip plots)
+pr_ssp_path: "" #PR ssp data (for F1-score v. deltaPrecip plots)
+
+model_files_era5: "/*.bin" #input of PCMCI (similar to weight path)
+model_path_era5: "" #input of PCMCI (similar to weight path)
+
+pcmci_results_era5: "" #PCMCI output path

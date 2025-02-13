@@ -60,11 +60,4 @@ If you want to produce plots for the weighted precipitation projections: you can
 
 ### Notes
 
-If there is a mistake in this README or you want to add more details, feel free to update this README.
-
-### TO DO:
-- clean the .py and .ipynb.
-- remove hard-coded path and replace them
-- add folder for input data, pca varimax output, pcmci output
-- explain how to get the input CMIP6 data and how to detrend it
-- how to install tigramite
+If you want to produce PCA-Varimax weights, run `generate_varimax_era5_1979-2014_allseason_timebin1.py`. You can then apply those weights to desired CMIP6 models `generate_varimax_for_ALL_CMIP6_MODELS_from_era5_1979-2014_weights_timebin1.py` to create the dimension-reduced data. Then, run `run_pcmci_for_CMIP6_MODELS_timebin1x2_taumax20.py` to estimate the causal networks (install tigramite for this). The Jupyter notebook can be run to produce some plots and calculate the metrics from the calculated causal networks.

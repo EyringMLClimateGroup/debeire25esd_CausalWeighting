@@ -4,7 +4,6 @@
 #
 # License: GNU General Public License v3.0
 
-
 import numpy as np
 import sys, warnings
 import os
@@ -16,13 +15,15 @@ import pickle as cPickle
 
 from datetime import date, datetime
 
-from geo_field_jakob import GeoField
+from geo_field import GeoField
 import tigramite
 from tigramite import data_processing as pp
+import yaml
 
-# data_dir=sys.argv[1]
-# filename=sys.argv[2]
-# savefolder=sys.argv[3]
+# Load YAML config
+with open("config.yaml", "r") as file:
+    config = yaml.safe_load(file)
+
 def load_data(load_filename, folder_name, varname,
                 from_date=None, to_date=None,
                 anomalize=None, anomalize_variance=None,
@@ -54,33 +55,18 @@ def load_data(load_filename, folder_name, varname,
         print("\tSlicing lon = %s, lat = %s" % (slice_lon, slice_lat))
     geo_object.slice_spatial(slice_lon, slice_lat)
 
-    # print geo_object.data()
-
     if anomalize:
         if verbosity > 0:
             print("\tanomalize %s with base period %s" % (anomalize, str(anomalize_base)))
 
         geo_object.transform_to_anomalies(anomalize_base,
                                           anomalize)
-        # print geo_object.tm[0]
-    # print geo_object.data()
-    # if anomalize_variance:
-    #     if verbosity > 0:
-    #         print("\tanomalize variance with base period %s" % str(anomalize_base))
-    #     geo_object.normalize_variance(anomalize_base)
 
-    # print geo_object.d[::12].mean(axis=0)
     if from_date is not None and to_date is not None:
         if verbosity > 0:
             print("\tSlicing from = %s to %s" % (from_date, to_date))
         geo_object.slice_date_range(from_date, to_date)
 
-    # if months is not None:
-    #     if verbosity > 0:
-    #         print("\tSlicing months %s" % months)
-    #     geo_object.slice_months(months)
-
-    # print geo_object.data[ :10, 0, 0]
     return geo_object
 
 def preprocess_data(geo_object,
@@ -327,10 +313,6 @@ def get_varimax_loadings(geo_object, month_mask=None,
 
     total_var = np.sum(np.var(masked_data, axis = 0))
 
-    # print time_mask
-    # print expvar
-    # start_end = (str(date.fromordinal(int(geo_object.tm[0]))),
-    #                   str(date.fromordinal(int(geo_object.tm[-1]))))
     start_end = (str(geo_object.start_date), str(geo_object.end_date))
 
     # print start_end_year
@@ -389,60 +371,11 @@ def get_results_from_weights(geo_object,
     print(masked_data.shape,data.shape,'masked and data after reshape')
     masked_data, Tbin = pp.time_bin_with_mask(masked_data,time_bin_length=time_bin)
     print(masked_data.shape,' masked data shape after binning')
-    # # Get truncated SVD
-    # V, U, S, ts_svd, eig, explained, max_comps = pca_svd(masked_data, truncate_by=truncate_by, max_comps=max_comps,
-    #                                fraction_explained_variance=fraction_explained_variance,
-    #                                 verbosity=verbosity)
-    #     # if verbosity > 0:
-        #     print("Explained variance at max_comps = %d: %.5f" % (max_comps, explained))
-
-    # if verbosity > 0:
-    #     if truncate_by == 'max_comps':
-
-    #         print("\tUser-selected number of components: %d\n"
-    #               "\tExplaining %.2f of variance" %(max_comps, explained))
-
-    #     elif truncate_by == 'fraction_explained_variance':
-
-    #         print("\tUser-selected explained variance: %.2f of total variance\n"
-    #               "\tResulting in %d components" %(explained, max_comps))
-
-
-    # if verbosity > 0:
-    #     print("\tVarimax rotation")
-    # # Rotate
-    # Vr, Rot = varimax(V, verbosity=verbosity)
-    # # Vr = V
-    # # Rot = np.diag(np.ones(V.shape[1]))
-    # # print Vr.shape
-    # Vr = svd_flip(Vr)
-
-    # if verbosity > 0:
-    #     print("\tFurther metrics")
-    # # Get explained variance of rotated components
-    # s2 = np.diag(S)**2 / (masked_data.shape[0] - 1.)
-
-    # # matrix with diagonal containing variances of rotated components
-    # S2r = np.dot(np.dot(np.transpose(Rot), np.matrix(np.diag(s2))), Rot)
-    # expvar = np.diag(S2r)
-
-    # sorted_expvar = np.sort(expvar)[::-1]
-    # # s_orig = ((Vt.shape[1] - 1) * s2) ** 0.5
-
-    # # reorder all elements according to explained variance (descending)
-    # nord = np.argsort(expvar)[::-1]
-    # Vr = Vr[:, nord]
 
     if verbosity > 0:
         print("\tCompute components using weights ")
     # Get time series of UNMASKED data
     comps_ts = data.dot(weights)
-
-    # print comps_ts[:2]
-    # print weights_dict_results['ts_unmasked'][:2]
-    # assert np.allclose(comps_ts, weights_dict_results['ts_unmasked'])
-
-
     comps_ts_masked = masked_data.dot(weights)
 
     # Get location of absmax
@@ -458,10 +391,7 @@ def get_results_from_weights(geo_object,
     if verbosity > 0:
         print("\ttotal_var = ", total_var)
         print("\tSetting start_end from data_parameters")
-    # print time_mask
-    # print expvar
-    # start_end = (str(date.fromordinal(int(geo_object.tm[0]))),
-    #                   str(date.fromordinal(int(geo_object.tm[-1]))))
+
     start_end = (str(geo_object.start_date), str(geo_object.end_date))
 
 
@@ -605,8 +535,8 @@ if __name__ == '__main__':
 
 
     run_script = True
-    weights_path = '/work/bd1083/b309165/CMIP6_CME/output_pca/era5_1979-2014_weights_timebin1/'
-    save_folder = '/work/bd1083/b309165/CMIP6_CME/output_pca/CMIP6_era5_1979-2014_weights_timebin1/'
+    weights_path = config["weight_path"]
+    save_folder = config["weight_path"]
     ## Save filename is generated from parameters, see below!
 
     use_weights_file = True
@@ -619,12 +549,12 @@ if __name__ == '__main__':
             n_comps = components[0]
             weights_filename_here = weights_filename_template % season
 
-            for load_filename in  [os.path.basename(file_path) for file_path in glob.glob('/work/bd1083/b309165/CMIP6_CME/data/CMIP6_data/psl_data/detrend_data/*.nc')]:
+            for load_filename in  [os.path.basename(file_path) for file_path in glob.glob(config["detrend_data_path"]+'*.nc')]:
                 print("/n Current CMIP6 model : " + load_filename)
                 d = {}
 
                 d['data_parameters'] = {
-                    'folder_name' : '/work/bd1083/b309165/CMIP6_CME/data/CMIP6_data/psl_data/detrend_data/',
+                    'folder_name' : config["detrend_data_path"],
                     #+'analysis_many_members/varimax/nc_psl_data/',
                     'load_filename' :  load_filename,
                     'varname' : 'psl',
@@ -696,14 +626,3 @@ if __name__ == '__main__':
 
                 if plot_loadings:
                     generate_pdf(d,  save_folder, save_filename)
-    ##
-    ## Check get_ts_from_loading
-    ##
-    # geo_object = load_data(**d['data_parameters'])
-
-    # geo_object = preprocess_data(geo_object, **d['preprocessing_parameters'])
-
-    # ts = get_ts_from_loading(geo_object,
-    #                     weights=d['results']['weights'])
-
-    # assert np.allclose(ts, d['results']['ts_unmasked'])

@@ -1,3 +1,5 @@
+# AUTHOR: Kevin Debeire
+# License: GNU General Public License v3.0
 import xarray as xr
 import numpy as np
 import pandas as pd
@@ -75,7 +77,7 @@ def calculate_inter_model_distances(distance_df):
     return inter_model_distances, unique_models
 
 # Calculate inter-model distances
-xr_data = xr.open_dataset("/work/bd1083/b309165/CMIP6_CME/results/results_CMIP6/xr_ind_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc")
+xr_data = xr.open_dataset("./perf_ind_scores/xr_ind_era5_60comps_pcmci_parcorr_timebin1_ssp585.nc")
 df = (xr_data/ xr_data.median()).dcme.to_dataframe()
 df = df.reset_index()
 inter_model_distances, model_names = calculate_inter_model_distances(df)
@@ -83,7 +85,7 @@ cross_distances, _ = calculate_cross_model_distances(df)
 inter_model_distances.append(cross_distances)
 model_names = list(model_names)
 model_names.append("Intermodel only")
-# print(cross_distances)
+
 # Plotting boxplot
 import pylab
 params = {'legend.fontsize': 'medium',
@@ -106,7 +108,7 @@ plt.savefig("calibration_sigma_s_ERA5.pdf",dpi=300)
 plt.close()
 
 # Calculate inter-model distances
-xr_data = xr.open_dataset("/work/bd1083/b309165/CMIP6_CME/results/results_CMIP6/xr_ind_60comps_pcmci_parcorr_timebin1_ssp585.nc")
+xr_data = xr.open_dataset("./perf_ind_scores/xr_ind_60comps_pcmci_parcorr_timebin1_ssp585.nc")
 df = (xr_data/ xr_data.median()).dcme.to_dataframe()
 df = df.reset_index()
 inter_model_distances, model_names = calculate_inter_model_distances(df)
