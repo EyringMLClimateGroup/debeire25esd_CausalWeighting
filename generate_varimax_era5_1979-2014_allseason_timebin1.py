@@ -16,7 +16,7 @@ import pickle as cPickle
 import ast
 from datetime import date, datetime
 
-from CMIP6_CME.script.debeire24esd_CMIP6_causal_weighting.geo_field import GeoField
+from geo_field import GeoField
 import tigramite
 from tigramite import data_processing as pp
 import yaml
