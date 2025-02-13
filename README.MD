@@ -1,8 +1,12 @@
 # Causal Weighting of Precipitation Projections over Land of CMIP6 Models
 
-This repository contains the scripts, data, and instructions necessary to perform causal weighting of precipitation projections over land using CMIP6 models. The approach leverages causal inference and performance/independence-based metrics to assess and weight climate model projections.
+This repository contains the scripts, data, and instructions necessary to perform causal weighting of precipitation projections over land using CMIP6 models. The approach leverages causal inference and performance/independence-based metrics to assess and weight climate model projections:
 
-Author: Kevin Debeire, DLR, kevin.debeire(at)dlr.de
+> Debeire, K., Bock, L., Nowack, P., Runge, J. & Eyring, V. (2025). Constraining uncertainty in projected precipitation over land with causal discovery  (see [article](https://egusphere.copernicus.org/preprints/2024/egusphere-2024-2656/)). Earth System Dynamics.
+
+Author of the repository: Kevin Debeire, DLR, kevin.debeire(at)dlr.de
+
+The current release on Zenodo can be found here: [![DOI](https://zenodo.org/badge/xxx.svg)](https://zenodo.org/badge/latestdoi/xxx)
 
 ## Overview
 
